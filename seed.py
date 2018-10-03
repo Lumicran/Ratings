@@ -1,11 +1,9 @@
 """Utility file to seed ratings database from MovieLens data in seed_data/"""
-
+import datetime
 from sqlalchemy import func
 from model import User
 from model import Rating
 from model import Movie
-from datetime import datetime
-
 from model import connect_to_db, db
 from server import app
 
@@ -49,13 +47,19 @@ def load_movies():
         movie = movie.rstrip()
         movie = movie.split("|")
 
-        #movie_id = movie[0]
-        title = movie[1][:-6]
-        released_at = datetime.strptime(str(movie[2]), "%d-%b-%Y")
-        print(title)
+        movie_id = movie[0]
+
+        title = (movie[1][:-6]).rstrip()
+
+        released_at = movie[2]
+        if released_at:
+            released_at = datetime.datetime.strptime(movie[2], "%d-%b-%Y")
+        else:
+            released_at = None
+
         imdb_URL = movie[4]
 
-        movie = Movie(#movie_id = movie_id,
+        movie = Movie(movie_id = movie_id,
                         title = title,
                         released_at = released_at,
                         imdb_url = imdb_URL)
@@ -97,6 +101,7 @@ def load_ratings():
     db.session.commit()
 
 
+
 def set_val_user_id():
     """Set value for the next user_id after seeding database"""
 
@@ -121,3 +126,4 @@ if __name__ == "__main__":
     load_movies()
     load_ratings()
     set_val_user_id()
+    
