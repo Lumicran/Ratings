@@ -24,6 +24,16 @@ app.jinja_env.undefined = StrictUndefined
 @app.route('/')
 def index():
     """Homepage."""
+
+    if session["active"]:
+        # logout
+
+        return render_template("homepage.html",
+                                #logout=logout)
+
+
+
+
     return render_template("homepage.html")
 
 
@@ -35,7 +45,59 @@ def user_list():
     return render_template("user_list.html",
                             users=users)
 
-    
+@app.route('/login')
+def login_page():
+    """Take use to login page."""
+
+    return render_template("login_form.html")
+
+@app.route('/login-check')
+def login_check():
+
+    email = request.args.get("user_email")
+    password = request.args.get("user_password")
+    user_info = db.session.query(User.email, User.password, User.user_id).all()
+
+    for user in user_info:
+        if user[0] == email and user[1] == password:
+            flash(u"Logged In")
+            session["active"] = user[2]
+
+            return render_template("homepage.html")
+        else:
+            continue
+
+    flash(u"No account found for the entered email/password.")
+    return render_template("login_form.html")
+
+
+
+
+@app.route('/register')
+def route_to_form():
+    """Take user to registration page"""
+
+    return render_template("register_form.html")
+
+@app.route('/process-registration', methods =["POST"])
+def register_process():
+    email = request.form.get("user_email")
+    password = request.form.get("user_password")
+
+    user_info = User.query.filter_by(email=email).all()
+
+    if user_info:
+        print("You are already in our database. Please log in.")
+
+        return render_template("homepage.html")
+    else:
+        new_user = User(email=email, password=password)
+        db.session.add(new_user)
+        db.session.commit()
+
+        return render_template("homepage.html")
+        
+
 
 
 
