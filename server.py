@@ -24,7 +24,7 @@ app.jinja_env.undefined = StrictUndefined
 @app.route('/')
 def index():
     """Homepage."""
-    
+
     return render_template("homepage.html")
 
 
@@ -35,6 +35,19 @@ def user_list():
     users = User.query.all()
     return render_template("user_list.html",
                             users=users)
+
+
+@app.route('/user_page')
+def user_page():
+    """Show information about a user."""
+
+    # email = request.arges.get(email)
+    user_id = request.args.get(user_id)
+    print(user_id)
+
+
+
+
 
 @app.route('/login')
 def login_page():
@@ -99,6 +112,7 @@ def register_process():
 
         return render_template("homepage.html")
         
+
 
 
 
