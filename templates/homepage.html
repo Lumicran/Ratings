@@ -12,8 +12,14 @@
 <h2>Users</h2>
 <p><a href="/users">View all users</a></p>
 
-<h3>Login</h3>
-<p><a href="/login">Click here to log in</a></p>
+{% if 'active_session' in session %}
+    <h3>Logout</h3>
+    <p><a href="/logout">Click here to log out</a></p>
+{% else %}
+    <h3>Login</h3>
+    <p><a href="/login">Click here to log in</a></p>
+{% endif %}
+
 
 <h4>Register</h4>
 <p><a href="/register">Register Here</a></p>

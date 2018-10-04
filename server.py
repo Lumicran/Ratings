@@ -24,16 +24,7 @@ app.jinja_env.undefined = StrictUndefined
 @app.route('/')
 def index():
     """Homepage."""
-
-    if session["active"]:
-        # logout
-
-        return render_template("homepage.html",
-                                #logout=logout)
-
-
-
-
+    
     return render_template("homepage.html")
 
 
@@ -51,6 +42,17 @@ def login_page():
 
     return render_template("login_form.html")
 
+@app.route('/logout')
+def logout_page():
+    """Take use to login page."""
+
+    session.pop('active_session')
+    flash("You are now logged out.")
+    print("logout", session)
+
+    return redirect("/")
+
+
 @app.route('/login-check')
 def login_check():
 
@@ -61,9 +63,9 @@ def login_check():
     for user in user_info:
         if user[0] == email and user[1] == password:
             flash(u"Logged In")
-            session["active"] = user[2]
+            session["active_session"] = user.user_id
 
-            return render_template("homepage.html")
+            return redirect("/")
         else:
             continue
 
